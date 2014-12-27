@@ -1,4 +1,4 @@
-aireas
+AiREAS
 ======
 
 Clean air and health

@@ -34,7 +34,7 @@ INSERT INTO public.featureofinterest (
             , descriptionxml
             , url  ) 
      VALUES (
-            null -- hibernatediscriminator
+            '?' -- hibernatediscriminator
             , (select featureofinteresttypeid from featureofinteresttype where featureofinteresttype = 'foitype x')
             , '19.cal'  -- identifier
             , null -- codespace (id?)
@@ -83,7 +83,7 @@ INSERT INTO public.procedure(
 			--, deleted -- default 'F' false
 			, descriptionfile
 			, referenceflag)
-    VALUES (null -- hibernatediscriminator
+    VALUES ('?' -- hibernatediscriminator
 	        , (select proceduredescriptionformatid from public.proceduredescriptionformat where proceduredescriptionformat = 'procdescformat x')
 			, 'proc_0001' -- identifier
 			, null -- codespace
@@ -105,7 +105,7 @@ INSERT INTO public.offering(
 			, codespacename
 			, description
 			)
-    VALUES (null -- hibernatediscriminator
+    VALUES ('?' -- hibernatediscriminator
 	        , 'offer_0001' -- idetifier
 			, null --codespace
 			, 'Offering 1'
@@ -116,6 +116,7 @@ INSERT INTO public.offering(
 /*
 observation
 */
+/*
 INSERT INTO public.observation(
             -- observationid -- default value by sequence
 			seriesid
@@ -127,19 +128,27 @@ INSERT INTO public.observation(
 			, name
 			, codespacename
 			, description
-			, deleted
+			-- , deleted -- default value 'F' false
 			, validtimestart
 			, validtimeend
 			, unitid
 			, samplinggeometry
 			)
     VALUES (
-	         
-			?, ?, 
-            ?, ?
+			12345 -- seriesid
+			, null -- phenomenontimestart
+			, null -- phenomenontimeend 
+            , null -- resulttime
 			, 'obs_20150718_0001' -- identifier
-			, ?, ?, ?, 
-            ?, ?, ?, ?, ?);
+			, null -- codespace
+			, null -- name
+			, null -- codespacename
+			, null -- description 
+			, null -- validtimestart
+			, null -- validtimeend 
+			, null -- unitid
+			, null -- samplinggeometry
+			);
 
 
 INSERT INTO public.observationhasoffering(
@@ -149,6 +158,7 @@ INSERT INTO public.observationhasoffering(
 	        (select observationid from public.observation where identifier = 'obs_20150718_0001')
 			, (select offeringid from public.offering where identifier = 'offer_0001')
 		   );
+*/
 
 
 /*

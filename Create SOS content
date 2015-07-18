@@ -6,12 +6,13 @@ ALTER TABLE public.featureofinteresttype ALTER COLUMN featureofinteresttypeid SE
 ALTER TABLE public.observationtype ALTER COLUMN observationtypeid SET DEFAULT nextval('observationtypeid_seq'::regclass);
 ALTER TABLE public.observation ALTER COLUMN observationid SET DEFAULT nextval('observationid_seq'::regclass);
 ALTER TABLE public.offering ALTER COLUMN offeringid SET DEFAULT nextval('offeringid_seq'::regclass);
+ALTER TABLE public.procedure ALTER COLUMN procedureid SET DEFAULT nextval('procedureid_seq'::regclass);
 
 */
 
 -- featureofinteresttype
 INSERT INTO public.featureofinteresttype (
-            -- featureofinteresttypeid -- automatic value by sequence
+            -- featureofinteresttypeid -- default value by sequence
             featureofinteresttype )
      VALUES (
             'foitype x'
@@ -20,7 +21,7 @@ INSERT INTO public.featureofinteresttype (
 SELECT * FROM public.featureofinteresttype;
 
 INSERT INTO public.featureofinterest ( 
-            -- featureofinterestid -- automatic value by sequence
+            -- featureofinterestid -- default value by sequence
             hibernatediscriminator
             , featureofinteresttypeid
             , identifier
@@ -51,7 +52,7 @@ observationtype
 For a particular constellation of procedure, observedProperty and ObservationOffering, observations shall always be encoded in the same observationType . The InsertObservation operation shall check whether a differing observationType is inserted for the same constellation of procedure, observedProperty and ObservationOffering that was inserted before.
 */
 INSERT INTO public.observationtype (
-            -- observationtypeid -- automatic value by sequence
+            -- observationtypeid -- default value by sequence
             observationtype )
      VALUES (
             'obstype x'
@@ -60,8 +61,24 @@ INSERT INTO public.observationtype (
 SELECT * FROM public.observationtype;
 
 
+INSERT INTO public.procedure(
+            -- procedureid -- default value by sequence
+			, hibernatediscriminator
+			, proceduredescriptionformatid
+			, identifier
+			, codespace
+			, name
+			, codespacename
+			, description
+			, deleted
+			, descriptionfile
+			, referenceflag)
+    VALUES (?, ?, 
+            ?, ?, ?, ?, ?, ?, 
+            ?, ?);
+
 INSERT INTO public.offering(
-            -- offeringid -- automatic value by sequence
+            -- offeringid -- default value by sequence
 			, hibernatediscriminator
 			, identifier
 			, codespace
@@ -76,7 +93,7 @@ INSERT INTO public.offering(
 observation
 */
 INSERT INTO public.observation(
-            -- observationid -- automatic value by sequence
+            -- observationid -- default value by sequence
 			seriesid
 			, phenomenontimestart
 			, phenomenontimeend

@@ -7,6 +7,7 @@ ALTER TABLE public.observationtype ALTER COLUMN observationtypeid SET DEFAULT ne
 ALTER TABLE public.observation ALTER COLUMN observationid SET DEFAULT nextval('observationid_seq'::regclass);
 ALTER TABLE public.offering ALTER COLUMN offeringid SET DEFAULT nextval('offeringid_seq'::regclass);
 ALTER TABLE public.procedure ALTER COLUMN procedureid SET DEFAULT nextval('procedureid_seq'::regclass);
+ALTER TABLE public.proceduredescriptionformat ALTER COLUMN proceduredescriptionformatid SET DEFAULT nextval('procdescformatid_seq'::regclass);
 
 */
 
@@ -18,7 +19,7 @@ INSERT INTO public.featureofinteresttype (
             'foitype x'
             );
 
-SELECT * FROM public.featureofinteresttype;
+-- SELECT * FROM public.featureofinteresttype;
 
 INSERT INTO public.featureofinterest ( 
             -- featureofinterestid -- default value by sequence
@@ -33,7 +34,7 @@ INSERT INTO public.featureofinterest (
             , descriptionxml
             , url  ) 
      VALUES (
-            '?' -- hibernatediscriminator
+            null -- hibernatediscriminator
             , (select featureofinteresttypeid from featureofinteresttype where featureofinteresttype = 'foitype x')
             , '19.cal'  -- identifier
             , null -- codespace (id?)
@@ -45,7 +46,7 @@ INSERT INTO public.featureofinterest (
             , null -- url  
             );
 
-SELECT * FROM public.featureofinterest;
+-- SELECT * FROM public.featureofinterest;
 
 /*
 observationtype
@@ -58,36 +59,59 @@ INSERT INTO public.observationtype (
             'obstype x'
             );
 
-SELECT * FROM public.observationtype;
+-- SELECT * FROM public.observationtype;
 
+
+
+-- proceduredescriptionformat
+INSERT INTO public.proceduredescriptionformat (
+            -- proceduredescriptionformatid -- default value by sequence
+            proceduredescriptionformat )
+     VALUES (
+            'procdescformat x'
+            );
 
 INSERT INTO public.procedure(
             -- procedureid -- default value by sequence
-			, hibernatediscriminator
+			hibernatediscriminator
 			, proceduredescriptionformatid
 			, identifier
 			, codespace
 			, name
 			, codespacename
 			, description
-			, deleted
+			--, deleted -- default 'F' false
 			, descriptionfile
 			, referenceflag)
-    VALUES (?, ?, 
-            ?, ?, ?, ?, ?, ?, 
-            ?, ?);
+    VALUES (null -- hibernatediscriminator
+	        , (select proceduredescriptionformatid from public.proceduredescriptionformat where proceduredescriptionformat = 'procdescformat x')
+			, 'proc_0001' -- identifier
+			, null -- codespace
+			, 'procedurename 0001'
+			, null --codespacename
+			, 'description....'
+			-- deleted -- defaults value 'F' false
+			, null --descriptionfile
+            , null --referenceflag
+			);
+
 
 INSERT INTO public.offering(
             -- offeringid -- default value by sequence
-			, hibernatediscriminator
+			hibernatediscriminator
 			, identifier
 			, codespace
 			, name
 			, codespacename
 			, description
 			)
-    VALUES (?, ?, ?, ?, 
-            ?, ?);
+    VALUES (null -- hibernatediscriminator
+	        , 'offer_0001' -- idetifier
+			, null --codespace
+			, 'Offering 1'
+			, null -- codespacename
+			, '...' -- description
+			);
 
 /*
 observation
@@ -109,14 +133,22 @@ INSERT INTO public.observation(
 			, unitid
 			, samplinggeometry
 			)
-    VALUES (?, ?, ?, 
-            ?, ?, ?, ?, ?, ?, 
+    VALUES (
+	         
+			?, ?, 
+            ?, ?
+			, 'obs_20150718_0001' -- identifier
+			, ?, ?, ?, 
             ?, ?, ?, ?, ?);
 
 
 INSERT INTO public.observationhasoffering(
-            observationid, offeringid)
-    VALUES (?, ?);
+            observationid
+			, offeringid)
+    VALUES (
+	        (select observationid from public.observation where identifier = 'obs_20150718_0001')
+			, (select offeringid from public.offering where identifier = 'offer_0001')
+		   );
 
 
 /*
@@ -128,7 +160,9 @@ DELETE FROM public.featureofinteresttype;
 DELETE FROM public.observation;
 DELETE FROM public.offering;
 DELETE FROM public.observationtype;
-DELETE FROM public.offering;
+DELETE FROM public.observationhasoffering;
+DELETE FROM public.procedure;
+DELETE FROM public.proceduredescriptionformat;
 
 */
 

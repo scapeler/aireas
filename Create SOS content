@@ -1,0 +1,55 @@
+/*
+
+-- additions to the standard database createscript for PostgreSQL
+ALTER TABLE featureofinterest ALTER COLUMN featureofinterestid SET DEFAULT nextval('featureofinterestid_seq'::regclass);
+ALTER TABLE featureofinteresttype ALTER COLUMN featureofinteresttypeid SET DEFAULT nextval('featureofinteresttypeid_seq'::regclass);
+
+*/
+
+-- featureofinteresttype
+insert into featureofinteresttype (
+-- featureofinteresttypeid -- automatic value by sequence
+ featureofinteresttype )
+values (
+'foitype x'
+);
+
+select * from featureofinteresttype;
+
+insert into featureofinterest ( 
+-- featureofinterestid -- automatic value by sequence
+hibernatediscriminator
+, featureofinteresttypeid
+, identifier
+, codespace
+, name
+, codespacename
+, description
+, geom
+, descriptionxml
+, url  ) 
+values (
+'?' -- hibernatediscriminator
+, (select featureofinteresttypeid from featureofinteresttype where featureofinteresttype = 'foitype x')
+, '19.cal'  -- identifier
+, null -- codespace (id?)
+, 'Finisterelaan 45'  -- name
+, null -- codespacename (id?) 
+, 'Rand van woonwijk, nabij A2/A50 (meest nabijgelegen rijbaan 104 m tot straatlantaarn (woningen en wal ertussen))' -- description
+, ST_Transform(ST_SetSRID(ST_MakePoint(389159, 158608), 28992), 4326)   --geom fom x/y 28992 into lat/lng 4326
+, null -- descriptionxml
+, null -- url  
+);
+
+select * from featureofinterest;
+
+
+/*
+
+cleanup
+
+delete from featureofinterest;
+delete from featureofinteresttype;
+
+*/
+

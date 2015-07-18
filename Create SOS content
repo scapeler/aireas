@@ -1,55 +1,117 @@
 /*
 
 -- additions to the standard database createscript for PostgreSQL
-ALTER TABLE featureofinterest ALTER COLUMN featureofinterestid SET DEFAULT nextval('featureofinterestid_seq'::regclass);
-ALTER TABLE featureofinteresttype ALTER COLUMN featureofinteresttypeid SET DEFAULT nextval('featureofinteresttypeid_seq'::regclass);
+ALTER TABLE public.featureofinterest ALTER COLUMN featureofinterestid SET DEFAULT nextval('featureofinterestid_seq'::regclass);
+ALTER TABLE public.featureofinteresttype ALTER COLUMN featureofinteresttypeid SET DEFAULT nextval('featureofinteresttypeid_seq'::regclass);
+ALTER TABLE public.observationtype ALTER COLUMN observationtypeid SET DEFAULT nextval('observationtypeid_seq'::regclass);
+ALTER TABLE public.observation ALTER COLUMN observationid SET DEFAULT nextval('observationid_seq'::regclass);
+ALTER TABLE public.offering ALTER COLUMN offeringid SET DEFAULT nextval('offeringid_seq'::regclass);
 
 */
 
 -- featureofinteresttype
-insert into featureofinteresttype (
--- featureofinteresttypeid -- automatic value by sequence
- featureofinteresttype )
-values (
-'foitype x'
-);
+INSERT INTO public.featureofinteresttype (
+            -- featureofinteresttypeid -- automatic value by sequence
+            featureofinteresttype )
+     VALUES (
+            'foitype x'
+            );
 
-select * from featureofinteresttype;
+SELECT * FROM public.featureofinteresttype;
 
-insert into featureofinterest ( 
--- featureofinterestid -- automatic value by sequence
-hibernatediscriminator
-, featureofinteresttypeid
-, identifier
-, codespace
-, name
-, codespacename
-, description
-, geom
-, descriptionxml
-, url  ) 
-values (
-'?' -- hibernatediscriminator
-, (select featureofinteresttypeid from featureofinteresttype where featureofinteresttype = 'foitype x')
-, '19.cal'  -- identifier
-, null -- codespace (id?)
-, 'Finisterelaan 45'  -- name
-, null -- codespacename (id?) 
-, 'Rand van woonwijk, nabij A2/A50 (meest nabijgelegen rijbaan 104 m tot straatlantaarn (woningen en wal ertussen))' -- description
-, ST_Transform(ST_SetSRID(ST_MakePoint(389159, 158608), 28992), 4326)   --geom fom x/y 28992 into lat/lng 4326
-, null -- descriptionxml
-, null -- url  
-);
+INSERT INTO public.featureofinterest ( 
+            -- featureofinterestid -- automatic value by sequence
+            hibernatediscriminator
+            , featureofinteresttypeid
+            , identifier
+            , codespace
+            , name
+            , codespacename
+            , description
+            , geom
+            , descriptionxml
+            , url  ) 
+     VALUES (
+            '?' -- hibernatediscriminator
+            , (select featureofinteresttypeid from featureofinteresttype where featureofinteresttype = 'foitype x')
+            , '19.cal'  -- identifier
+            , null -- codespace (id?)
+            , 'Finisterelaan 45'  -- name
+            , null -- codespacename (id?) 
+            , 'Rand van woonwijk, nabij A2/A50 (meest nabijgelegen rijbaan 104 m tot straatlantaarn (woningen en wal ertussen))' -- description
+            , ST_Transform(ST_SetSRID(ST_MakePoint(389159, 158608), 28992), 4326)   --geom fom x/y 28992 into lat/lng 4326
+            , null -- descriptionxml
+            , null -- url  
+            );
 
-select * from featureofinterest;
+SELECT * FROM public.featureofinterest;
+
+/*
+observationtype
+For a particular constellation of procedure, observedProperty and ObservationOffering, observations shall always be encoded in the same observationType . The InsertObservation operation shall check whether a differing observationType is inserted for the same constellation of procedure, observedProperty and ObservationOffering that was inserted before.
+*/
+INSERT INTO public.observationtype (
+            -- observationtypeid -- automatic value by sequence
+            observationtype )
+     VALUES (
+            'obstype x'
+            );
+
+SELECT * FROM public.observationtype;
+
+
+INSERT INTO public.offering(
+            -- offeringid -- automatic value by sequence
+			, hibernatediscriminator
+			, identifier
+			, codespace
+			, name
+			, codespacename
+			, description
+			)
+    VALUES (?, ?, ?, ?, 
+            ?, ?);
+
+/*
+observation
+*/
+INSERT INTO public.observation(
+            -- observationid -- automatic value by sequence
+			seriesid
+			, phenomenontimestart
+			, phenomenontimeend
+			, resulttime
+			, identifier
+			, codespace
+			, name
+			, codespacename
+			, description
+			, deleted
+			, validtimestart
+			, validtimeend
+			, unitid
+			, samplinggeometry
+			)
+    VALUES (?, ?, ?, 
+            ?, ?, ?, ?, ?, ?, 
+            ?, ?, ?, ?, ?);
+
+
+INSERT INTO public.observationhasoffering(
+            observationid, offeringid)
+    VALUES (?, ?);
 
 
 /*
 
 cleanup
 
-delete from featureofinterest;
-delete from featureofinteresttype;
+DELETE FROM public.featureofinterest;
+DELETE FROM public.featureofinteresttype;
+DELETE FROM public.observation;
+DELETE FROM public.offering;
+DELETE FROM public.observationtype;
+DELETE FROM public.offering;
 
 */
 

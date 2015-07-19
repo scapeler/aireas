@@ -56,8 +56,15 @@ INSERT INTO public.observationtype (
             -- observationtypeid -- default value by sequence
             observationtype )
      VALUES (
-            'obstype x'
+            'http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Observation'
             );
+INSERT INTO public.observationtype (
+            -- observationtypeid -- default value by sequence
+            observationtype )
+     VALUES (
+            'http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement'
+            );
+			
 
 -- SELECT * FROM public.observationtype;
 
@@ -106,7 +113,7 @@ INSERT INTO public.offering(
 			, description
 			)
     VALUES ('?' -- hibernatediscriminator
-	        , 'offer_0001' -- idetifier
+	        , 'offer_0001' -- identifier
 			, null --codespace
 			, 'Offering 1'
 			, null -- codespacename

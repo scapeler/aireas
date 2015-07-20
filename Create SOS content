@@ -6,6 +6,7 @@ ALTER TABLE public.featureofinteresttype ALTER COLUMN featureofinteresttypeid SE
 ALTER TABLE public.observationtype ALTER COLUMN observationtypeid SET DEFAULT nextval('observationtypeid_seq'::regclass);
 ALTER TABLE public.observation ALTER COLUMN observationid SET DEFAULT nextval('observationid_seq'::regclass);
 ALTER TABLE public.series ALTER COLUMN seriesid SET DEFAULT nextval('seriesid_seq'::regclass);
+ALTER TABLE public.relatedfeature ALTER COLUMN relatedfeatureid SET DEFAULT nextval('relatedfeatureid_seq'::regclass);
 ALTER TABLE public.observableproperty ALTER COLUMN observablepropertyid SET DEFAULT nextval('observablepropertyid_seq'::regclass);
 ALTER TABLE public.offering ALTER COLUMN offeringid SET DEFAULT nextval('offeringid_seq'::regclass);
 ALTER TABLE public.procedure ALTER COLUMN procedureid SET DEFAULT nextval('procedureid_seq'::regclass);
@@ -155,7 +156,7 @@ INSERT INTO public.series(
 /*
 observation
 */
-/*
+
 INSERT INTO public.observation(
             -- observationid -- default value by sequence
 			  seriesid
@@ -213,7 +214,25 @@ INSERT INTO public.observationhasoffering(
 	        (select observationid from public.observation where identifier = 'obs_20150718_0001')
 			, (select offeringid from public.offering where identifier = 'offer_0001')
 		   );
-*/
+
+
+INSERT INTO public.relatedfeature(
+            -- relatedfeatureid -- default value by sequence
+			featureofinterestid)
+    VALUES (
+           (select featureofinterestid from public.featureofinterest where identifier = '19.cal') 	
+           );
+	
+
+INSERT INTO public.offeringhasrelatedfeature(
+              relatedfeatureid
+			, offeringid)
+    VALUES (
+	        (select relfoi.relatedfeatureid from public.relatedfeature relfoi, public.featureofinterest foi where relfoi.featureofinterestid = foi.featureofinterestid AND foi.identifier = '19.cal')
+			, (select offeringid from public.offering where identifier = 'offer_0001')
+		   );
+
+
 
 
 /*

@@ -246,6 +246,8 @@ DELETE FROM public.offering;
 DELETE FROM public.observationtype;
 DELETE FROM public.observationhasoffering;
 DELETE FROM public.procedure;
+DELETE FROM public.relatedfeature;
+DELETE FROM public.offeringhasrelatedfeature;
 DELETE FROM public.proceduredescriptionformat;
 DELETE FROM public.series;
 DELETE FROM public.observableproperty

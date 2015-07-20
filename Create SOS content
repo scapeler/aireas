@@ -5,6 +5,8 @@ ALTER TABLE public.featureofinterest ALTER COLUMN featureofinterestid SET DEFAUL
 ALTER TABLE public.featureofinteresttype ALTER COLUMN featureofinteresttypeid SET DEFAULT nextval('featureofinteresttypeid_seq'::regclass);
 ALTER TABLE public.observationtype ALTER COLUMN observationtypeid SET DEFAULT nextval('observationtypeid_seq'::regclass);
 ALTER TABLE public.observation ALTER COLUMN observationid SET DEFAULT nextval('observationid_seq'::regclass);
+ALTER TABLE public.series ALTER COLUMN seriesid SET DEFAULT nextval('seriesid_seq'::regclass);
+ALTER TABLE public.observableproperty ALTER COLUMN observablepropertyid SET DEFAULT nextval('observablepropertyid_seq'::regclass);
 ALTER TABLE public.offering ALTER COLUMN offeringid SET DEFAULT nextval('offeringid_seq'::regclass);
 ALTER TABLE public.procedure ALTER COLUMN procedureid SET DEFAULT nextval('procedureid_seq'::regclass);
 ALTER TABLE public.proceduredescriptionformat ALTER COLUMN proceduredescriptionformatid SET DEFAULT nextval('procdescformatid_seq'::regclass);
@@ -103,22 +105,52 @@ INSERT INTO public.procedure(
 			);
 
 
-INSERT INTO public.offering(
-            -- offeringid -- default value by sequence
-			hibernatediscriminator
+/*
+observableproperty
+*/
+INSERT INTO public.observableproperty(
+             -- observablepropertyid -- default value by sequence
+			  hibernatediscriminator
 			, identifier
 			, codespace
 			, name
 			, codespacename
 			, description
 			)
-    VALUES ('?' -- hibernatediscriminator
-	        , 'offer_0001' -- identifier
-			, null --codespace
-			, 'Offering 1'
-			, null -- codespacename
-			, '...' -- description
+    VALUES ('?'  -- hibernatediscriminator
+            , 'ID1234'
+			, null
+			, null
+			, null
+			, null
 			);
+			
+/*
+series
+*/
+INSERT INTO public.series(
+            -- seriesid -- default value by sequence
+			  featureofinterestid
+			, observablepropertyid
+			, procedureid 
+            -- , deleted -- defaults value 'F' false
+			-- , published -- defaults value 'T' true
+			, firsttimestamp
+			, lasttimestamp
+			, firstnumericvalue
+			, lastnumericvalue
+			, unitid)
+    VALUES ((select featureofinterestid from featureofinterest where identifier = '19.cal') 
+			, (select observablepropertyid from public.observableproperty where identifier = 'ID1234') -- observablepropertyid
+			, (select procedureid from public.procedure where identifier = 'proc_0001') -- procedureid
+            , null -- firsttimestamp 
+			, null -- lasttimestamp
+			, null -- firstnumericvalue
+			, null -- lastnumericvalue
+			, null -- unitid
+			);
+
+
 
 /*
 observation
@@ -126,7 +158,7 @@ observation
 /*
 INSERT INTO public.observation(
             -- observationid -- default value by sequence
-			seriesid
+			  seriesid
 			, phenomenontimestart
 			, phenomenontimeend
 			, resulttime
@@ -142,10 +174,10 @@ INSERT INTO public.observation(
 			, samplinggeometry
 			)
     VALUES (
-			12345 -- seriesid
-			, null -- phenomenontimestart
-			, null -- phenomenontimeend 
-            , null -- resulttime
+			(select ser.seriesid from series ser, featureofinterest foi where foi.identifier = '19.cal' and foi.featureofinterestid = ser.featureofinterestid) -- seriesid
+			, '2015-07-20T0:0:0.00Z' -- phenomenontimestart
+			, '2015-07-20T0:0:0.00Z' -- phenomenontimeend 
+            , '2015-07-20T0:0:0.00Z' -- resulttime
 			, 'obs_20150718_0001' -- identifier
 			, null -- codespace
 			, null -- name
@@ -157,9 +189,25 @@ INSERT INTO public.observation(
 			, null -- samplinggeometry
 			);
 
+INSERT INTO public.offering(
+            -- offeringid -- default value by sequence
+			  hibernatediscriminator
+			, identifier
+			, codespace
+			, name
+			, codespacename
+			, description
+			)
+    VALUES ('?' -- hibernatediscriminator
+	        , 'offer_0001' -- identifier
+			, null --codespace
+			, 'Offering 1'
+			, null -- codespacename
+			, '...' -- description
+			);
 
 INSERT INTO public.observationhasoffering(
-            observationid
+              observationid
 			, offeringid)
     VALUES (
 	        (select observationid from public.observation where identifier = 'obs_20150718_0001')
@@ -180,6 +228,8 @@ DELETE FROM public.observationtype;
 DELETE FROM public.observationhasoffering;
 DELETE FROM public.procedure;
 DELETE FROM public.proceduredescriptionformat;
+DELETE FROM public.series;
+
 
 */
 

@@ -21,12 +21,24 @@ INSERT INTO public.featureofinteresttype (
      VALUES (
             'foitype x'
             );
+INSERT INTO public.featureofinteresttype (
+            -- featureofinteresttypeid -- default value by sequence
+            featureofinteresttype )
+     VALUES (
+            'foitype City'
+            );
+INSERT INTO public.featureofinteresttype (
+            -- featureofinteresttypeid -- default value by sequence
+            featureofinteresttype )
+     VALUES (
+            'foitype Country'
+            );
 
 -- SELECT * FROM public.featureofinteresttype;
 
 INSERT INTO public.featureofinterest ( 
             -- featureofinterestid -- default value by sequence
-            hibernatediscriminator
+              hibernatediscriminator
             , featureofinteresttypeid
             , identifier
             , codespace
@@ -45,6 +57,102 @@ INSERT INTO public.featureofinterest (
             , null -- codespacename (id?) 
             , 'Rand van woonwijk, nabij A2/A50 (meest nabijgelegen rijbaan 104 m tot straatlantaarn (woningen en wal ertussen))' -- description
             , ST_Transform(ST_SetSRID(ST_MakePoint(389159, 158608), 28992), 4326)   --geom fom x/y 28992 into lat/lng 4326
+            , null -- descriptionxml
+            , null -- url  
+            );
+INSERT INTO public.featureofinterest ( 
+            -- featureofinterestid -- default value by sequence
+              hibernatediscriminator
+            , featureofinteresttypeid
+            , identifier
+            , codespace
+            , name
+            , codespacename
+            , description
+            , geom
+            , descriptionxml
+            , url  ) 
+     VALUES (
+            '?' -- hibernatediscriminator
+            , (select featureofinteresttypeid from featureofinteresttype where featureofinteresttype = 'foitype Country')
+            , 'Netherlands'  -- identifier
+            , null -- codespace (id?)
+            , 'Netherlands'  -- name
+            , null -- codespacename (id?) 
+            , '' -- description
+            , ST_Transform(ST_SetSRID(ST_MakePoint(389159, 158608), 28992), 4326)   --geom fom x/y 28992 into lat/lng 4326 --todo must be geometry of country
+            , null -- descriptionxml
+            , null -- url  
+            );
+INSERT INTO public.featureofinterest ( 
+            -- featureofinterestid -- default value by sequence
+              hibernatediscriminator
+            , featureofinteresttypeid
+            , identifier
+            , codespace
+            , name
+            , codespacename
+            , description
+            , geom
+            , descriptionxml
+            , url  ) 
+     VALUES (
+            '?' -- hibernatediscriminator
+            , (select featureofinteresttypeid from featureofinteresttype where featureofinteresttype = 'foitype City')
+            , 'Eindhoven'  -- identifier
+            , null -- codespace (id?)
+            , 'Eindhoven'  -- name
+            , null -- codespacename (id?) 
+            , '' -- description
+            , ST_Transform(ST_SetSRID(ST_MakePoint(389159, 158608), 28992), 4326)   --geom fom x/y 28992 into lat/lng 4326 --todo must be geometry of city
+            , null -- descriptionxml
+            , null -- url  
+            );
+INSERT INTO public.featureofinterest ( 
+            -- featureofinterestid -- default value by sequence
+              hibernatediscriminator
+            , featureofinteresttypeid
+            , identifier
+            , codespace
+            , name
+            , codespacename
+            , description
+            , geom
+            , descriptionxml
+            , url  ) 
+     VALUES (
+            '?' -- hibernatediscriminator
+            , (select featureofinteresttypeid from featureofinteresttype where featureofinteresttype = 'foitype City')
+            , 'Breda'  -- identifier
+            , null -- codespace (id?)
+            , 'Breda'  -- name
+            , null -- codespacename (id?) 
+            , '' -- description
+            , ST_Transform(ST_SetSRID(ST_MakePoint(389159, 158608), 28992), 4326)   --geom fom x/y 28992 into lat/lng 4326 --todo must be geometry of city
+            , null -- descriptionxml
+            , null -- url  
+            );
+INSERT INTO public.featureofinterest ( 
+            -- featureofinterestid -- default value by sequence
+              hibernatediscriminator
+            , featureofinteresttypeid
+            , identifier
+            , codespace
+            , name
+            , codespacename
+            , description
+            , geom
+            , descriptionxml
+            , url  ) 
+     VALUES (
+            '?' -- hibernatediscriminator
+            , (select featureofinteresttypeid from featureofinteresttype where featureofinteresttype = 'foitype City')
+            , 'Helmond'  -- identifier
+            , null -- codespace (id?)
+            , 'Helmond'  -- name
+            , null -- codespacename (id?) 
+            , '' -- description
+            , ST_Transform(ST_SetSRID(ST_MakePoint(389159, 158608), 28992), 4326)   --geom fom x/y 28992 into lat/lng 4326 --todo must be geometry of city
             , null -- descriptionxml
             , null -- url  
             );
@@ -125,6 +233,24 @@ INSERT INTO public.observableproperty(
 			, null
 			, null
 			);
+INSERT INTO public.observableproperty(
+             -- observablepropertyid -- default value by sequence
+			  hibernatediscriminator
+			, identifier
+			, codespace
+			, name
+			, codespacename
+			, description
+			)
+    VALUES ('?'  -- hibernatediscriminator
+            , 'http://giv-genesis.uni-muenster.de:8080/SOR/REST/phenomenon/OGC/Concentration[SO2]'
+			, null
+			, null
+			, null
+			, null
+			);
+
+
 			
 /*
 series
@@ -150,7 +276,48 @@ INSERT INTO public.series(
 			, null -- lastnumericvalue
 			, null -- unitid
 			);
-
+INSERT INTO public.series(
+            -- seriesid -- default value by sequence
+			  featureofinterestid
+			, observablepropertyid
+			, procedureid 
+            -- , deleted -- defaults value 'F' false
+			-- , published -- defaults value 'T' true
+			, firsttimestamp
+			, lasttimestamp
+			, firstnumericvalue
+			, lastnumericvalue
+			, unitid)
+    VALUES ((select featureofinterestid from featureofinterest where identifier = 'Netherlands') 
+			, (select observablepropertyid from public.observableproperty where identifier = 'http://giv-genesis.uni-muenster.de:8080/SOR/REST/phenomenon/OGC/Concentration[SO2]') -- observablepropertyid
+			, (select procedureid from public.procedure where identifier = 'proc_0001') -- procedureid
+            , null -- firsttimestamp 
+			, null -- lasttimestamp
+			, null -- firstnumericvalue
+			, null -- lastnumericvalue
+			, null -- unitid
+			);
+INSERT INTO public.series(
+            -- seriesid -- default value by sequence
+			  featureofinterestid
+			, observablepropertyid
+			, procedureid 
+            -- , deleted -- defaults value 'F' false
+			-- , published -- defaults value 'T' true
+			, firsttimestamp
+			, lasttimestamp
+			, firstnumericvalue
+			, lastnumericvalue
+			, unitid)
+    VALUES ((select featureofinterestid from featureofinterest where identifier = 'Eindhoven') 
+			, (select observablepropertyid from public.observableproperty where identifier = 'http://giv-genesis.uni-muenster.de:8080/SOR/REST/phenomenon/OGC/Concentration[SO2]') -- observablepropertyid
+			, (select procedureid from public.procedure where identifier = 'proc_0001') -- procedureid
+            , null -- firsttimestamp 
+			, null -- lasttimestamp
+			, null -- firstnumericvalue
+			, null -- lastnumericvalue
+			, null -- unitid
+			);
 
 
 /*
@@ -222,6 +389,30 @@ INSERT INTO public.relatedfeature(
     VALUES (
            (select featureofinterestid from public.featureofinterest where identifier = '19.cal') 	
            );
+INSERT INTO public.relatedfeature(
+            -- relatedfeatureid -- default value by sequence
+			featureofinterestid)
+    VALUES (
+           (select featureofinterestid from public.featureofinterest where identifier = 'Netherlands') 	
+           );
+INSERT INTO public.relatedfeature(
+            -- relatedfeatureid -- default value by sequence
+			featureofinterestid)
+    VALUES (
+           (select featureofinterestid from public.featureofinterest where identifier = 'Eindhoven') 	
+           );		   
+INSERT INTO public.relatedfeature(
+            -- relatedfeatureid -- default value by sequence
+			featureofinterestid)
+    VALUES (
+           (select featureofinterestid from public.featureofinterest where identifier = 'Breda') 	
+           );
+INSERT INTO public.relatedfeature(
+            -- relatedfeatureid -- default value by sequence
+			featureofinterestid)
+    VALUES (
+           (select featureofinterestid from public.featureofinterest where identifier = 'Helmond') 	
+           );		   
 	
 
 INSERT INTO public.offeringhasrelatedfeature(
